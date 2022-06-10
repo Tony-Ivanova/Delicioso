@@ -7,28 +7,34 @@ import classes from "./AvailableMeals.module.css"
 const AvailableMeals = () => {
 
     const [meals, setMeals] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchMeals = async () => {
-           const response = await fetch('https://delicioso-9eb49-default-rtdb.firebaseio.com/meals.json');
-           const responseData = await response.json();
+            const response = await fetch('https://delicioso-9eb49-default-rtdb.firebaseio.com/meals.json');
+            const responseData = await response.json();
 
-           const loadedMeals = [];
+            const loadedMeals = [];
 
-           for(const key in responseData){
-               loadedMeals.push({
-                   id: key,
-                   name: responseData[key].name,
-                   description: responseData[key].description,
-                   price: responseData[key].price,
-               })
-           }
-           setMeals(loadedMeals)
+            for (const key in responseData) {
+                loadedMeals.push({
+                    id: key,
+                    name: responseData[key].name,
+                    description: responseData[key].description,
+                    price: responseData[key].price,
+                })
+            }
+            setMeals(loadedMeals);
+            setIsLoading(false);
         };
         fetchMeals();
-
     }, []);
 
+    if(isLoading){
+        return <section className={classes.MealsLoading}>
+            <p>Loading...</p>
+        </section>
+    }
 
     const mealsList = meals.map(meal =>
         <MealItem
